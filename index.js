@@ -18,15 +18,8 @@ pool.connect();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-let items = [
-  { id: 1, title: "Buy milk" },
-  { id: 2, title: "Finish homework" },
-];
-
 app.get("/", async (req, res) => {
-
   const result = await pool.query("select * from items");
-
   res.render("index.ejs", {
     listTitle: "Today",
     listItems: result.rows,
@@ -42,7 +35,6 @@ app.post("/add", async (req, res) => {
 app.post("/edit", async (req, res) => {
   const newId = req.body["updatedItemId"];
   const newTitle = req.body["updatedItemTitle"];
-  console.log(newId, newTitle);
   await pool.query("update items set title = ($1) where id = ($2)", [newTitle, newId]);
   res.redirect("/");
 });
