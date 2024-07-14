@@ -19,30 +19,46 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", async (req, res) => {
-  const result = await pool.query("select * from items");
-  res.render("index.ejs", {
-    listTitle: "Today",
-    listItems: result.rows,
-  });
+  try {
+    const result = await pool.query("select * from items order by id ASC");
+    res.render("index.ejs", {
+      listTitle: "Today",
+      listItems: result.rows,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 app.post("/add", async (req, res) => {
   const item = req.body.newItem;
-  await pool.query("insert into items (title) values ($1)", [item]);
-  res.redirect("/");
+  try {
+    await pool.query("insert into items (title) values ($1)", [item]);
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 app.post("/edit", async (req, res) => {
   const newId = req.body["updatedItemId"];
   const newTitle = req.body["updatedItemTitle"];
-  await pool.query("update items set title = ($1) where id = ($2)", [newTitle, newId]);
-  res.redirect("/");
+  try {
+    await pool.query("update items set title = ($1) where id = ($2)", [newTitle, newId]);
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 app.post("/delete", async (req, res) => {
   const item = req.body["deleteItemId"];
-  await pool.query("delete from items where id = ($1)", [item]);
-  res.redirect("/");
+  try {
+    await pool.query("delete from items where id = ($1)", [item]);
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 app.listen(port, () => {
