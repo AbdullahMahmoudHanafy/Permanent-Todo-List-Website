@@ -33,13 +33,15 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.post("/add", (req, res) => {
+app.post("/add", async (req, res) => {
   const item = req.body.newItem;
-  items.push({ title: item });
+  await pool.query("insert into items (title) values ($1)", [item]);
   res.redirect("/");
 });
 
-app.post("/edit", (req, res) => {});
+app.post("/edit", (req, res) => {
+
+});
 
 app.post("/delete", (req, res) => {});
 
