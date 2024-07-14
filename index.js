@@ -39,12 +39,16 @@ app.post("/add", async (req, res) => {
   res.redirect("/");
 });
 
-app.post("/edit", (req, res) => {
+app.post("/edit", async (req, res) => {
+  const newId = req.body["updatedItemId"];
+  const newTitle = req.body["updatedItemTitle"];
+  console.log(newId, newTitle);
+  await pool.query("update items set title = ($1) where id = ($2)", [newTitle, newId]);
+  res.redirect("/");
 });
 
 app.post("/delete", async (req, res) => {
   const item = req.body["deleteItemId"];
-  console.log(item)
   await pool.query("delete from items where id = ($1)", [item]);
   res.redirect("/");
 });
