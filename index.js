@@ -40,10 +40,14 @@ app.post("/add", async (req, res) => {
 });
 
 app.post("/edit", (req, res) => {
-
 });
 
-app.post("/delete", (req, res) => {});
+app.post("/delete", async (req, res) => {
+  const item = req.body["deleteItemId"];
+  console.log(item)
+  await pool.query("delete from items where id = ($1)", [item]);
+  res.redirect("/");
+});
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
